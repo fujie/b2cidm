@@ -63,12 +63,11 @@ public class PushNotification extends AbstractExtractionAction {
 			String userName = upCtx.getUsername();
 			log.info("user : {}", userName);
 
-			// Todo : use messagingAPI
+			string licenseKey = "testLicenseKey";
 
 			// http client
 			CloseableHttpClient httpclient = HttpClients.createDefault();
-			// HttpGet myrequest = new HttpGet("https://b2cotp-php.azurewebsites.net/send.php?line_id=U33f595897fe185eb89c4b105d6f44dcb");
-			HttpGet myrequest = new HttpGet("https://b2cotp-php.azurewebsites.net/send.php?student_id=" + userName);
+			HttpGet myrequest = new HttpGet("https://b2cotp-php.azurewebsites.net/send.php?student_id=" + userName + "&key=" + licenseKey);
 			CloseableHttpResponse response = null;
 			try {
 				response = httpclient.execute(myrequest);
