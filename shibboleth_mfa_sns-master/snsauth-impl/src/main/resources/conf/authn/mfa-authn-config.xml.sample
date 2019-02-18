@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:c="http://www.springframework.org/schema/c"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+                           http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd"
+
+       default-init-method="initialize"
+       default-destroy-method="destroy">
+
+    <util:map id="shibboleth.authn.MFA.TransitionMap">
+        <entry key="">
+            <bean parent="shibboleth.authn.MFA.Transition" p:nextFlow="authn/Password" />
+        </entry>
+
+        <entry key="authn/Password">
+            <bean parent="shibboleth.authn.MFA.Transition" p:nextFlowStrategy-ref="checkSecondFactor" />
+        </entry>
+
+    </util:map>
+
+    <bean id="checkSecondFactor" parent="shibboleth.ContextFunctions.Scripted" factory-method="inlineScript"
+        p:customObject-ref="shibboleth.AttributeResolverService">
+        <constructor-arg>
+            <value>
+            <![CDATA[
+                nextFlow = "authn/SNS";
+
+                // Go straight to second factor if we have to, or set up for an attribute lookup first.
+                authCtx = input.getSubcontext("net.shibboleth.idp.authn.context.AuthenticationContext");
+                mfaCtx = authCtx.getSubcontext("net.shibboleth.idp.authn.context.MultiFactorAuthenticationContext");
+                if (mfaCtx.isAcceptable()) {
+                    // Attribute check is required to decide if first factor alone is enough.
+                    resCtx = input.getSubcontext(
+                        "net.shibboleth.idp.attribute.resolver.context.AttributeResolutionContext", true);
+
+                    // Look up the username using a standard function.
+                    usernameLookupStrategyClass
+                        = Java.type("net.shibboleth.idp.session.context.navigate.CanonicalUsernameLookupStrategy");
+                    usernameLookupStrategy = new usernameLookupStrategyClass();
+                    resCtx.setPrincipal(usernameLookupStrategy.apply(input));
+
+                    resCtx.getRequestedIdPAttributeNames().add("require-mfa");
+                    resCtx.resolveAttributes(custom);
+
+                    // Check for an attribute that authorizes use of first factor.
+                    attribute = resCtx.getResolvedIdPAttributes().get("require-mfa");
+                    valueType =  Java.type("net.shibboleth.idp.attribute.StringAttributeValue");
+                    if (attribute != null && attribute.getValues().contains(new valueType("yes"))) {
+                        nextFlow = null;
+                    }
+
+                    input.removeSubcontext(resCtx);   // cleanup
+                }
+
+                nextFlow;   // pass control to second factor or end with the first
+            ]]>
+            </value>
+        </constructor-arg>
+    </bean>
+
+</beans>

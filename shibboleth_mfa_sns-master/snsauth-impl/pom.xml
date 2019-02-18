@@ -1,0 +1,193 @@
+<?xml version="1.0"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>jp.co.ctcg.b2c</groupId>
+		<artifactId>snsauth-parent</artifactId>
+		<version>0.1.0</version>
+	</parent>
+	<artifactId>snsauth-impl</artifactId>
+	<name>snsauth-impl</name>
+	<url>http://maven.apache.org</url>
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<maven.compiler.version>3.3</maven.compiler.version>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<!-- Compile Dependencies -->
+		<dependency>
+			<groupId>net.shibboleth.idp</groupId>
+			<artifactId>idp-attribute-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>net.shibboleth.idp</groupId>
+			<artifactId>idp-authn-api</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>net.shibboleth.idp</groupId>
+			<artifactId>idp-attribute-resolver-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>net.shibboleth.idp</groupId>
+			<artifactId>idp-attribute-resolver-spring</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>net.shibboleth.idp</groupId>
+			<artifactId>idp-session-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>net.shibboleth.idp</groupId>
+			<artifactId>idp-profile-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>${opensaml.groupId}</groupId>
+			<artifactId>opensaml-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>${opensaml.groupId}</groupId>
+			<artifactId>opensaml-profile-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>${opensaml.groupId}</groupId>
+			<artifactId>opensaml-soap-api</artifactId>
+		</dependency>
+
+		<!-- Provided Dependencies -->
+
+		<!-- Runtime Dependencies -->
+
+		<!-- Test Dependencies -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>net.shibboleth.idp</groupId>
+			<artifactId>idp-attribute-resolver-impl</artifactId>
+			<type>test-jar</type>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>net.shibboleth.idp</groupId>
+			<artifactId>idp-attribute-resolver-spring</artifactId>
+			<type>test-jar</type>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>net.shibboleth.idp</groupId>
+			<artifactId>idp-saml-impl</artifactId>
+			<type>test-jar</type>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>net.shibboleth.idp</groupId>
+			<artifactId>idp-core</artifactId>
+			<type>test-jar</type>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>${opensaml.groupId}</groupId>
+			<artifactId>opensaml-core</artifactId>
+			<version>${opensaml.version}</version>
+			<type>test-jar</type>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>${opensaml.groupId}</groupId>
+			<artifactId>opensaml-profile-api</artifactId>
+			<version>${opensaml.version}</version>
+			<scope>test</scope>
+			<type>test-jar</type>
+		</dependency>
+
+		<dependency>
+			<groupId>${opensaml.groupId}</groupId>
+			<artifactId>opensaml-security-impl</artifactId>
+			<version>${opensaml.version}</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>net.shibboleth.idp</groupId>
+			<artifactId>idp-profile-api</artifactId>
+			<scope>test</scope>
+			<type>test-jar</type>
+		</dependency>
+
+		<dependency>
+			<groupId>net.shibboleth.idp</groupId>
+			<artifactId>idp-authn-api</artifactId>
+			<scope>test</scope>
+			<type>test-jar</type>
+		</dependency>
+
+		<dependency>
+			<groupId>net.shibboleth.idp</groupId>
+			<artifactId>idp-authn-impl</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>net.shibboleth.idp</groupId>
+			<artifactId>idp-authn-impl</artifactId>
+			<scope>test</scope>
+			<type>test-jar</type>
+		</dependency>
+
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>copy-dependencies</id>
+						<phase>prepare-package</phase>
+						<goals>
+							<goal>copy-dependencies</goal>
+						</goals>
+						<configuration>
+							<includeGroupIds>jp.co.ctcg.b2c</includeGroupIds>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<configuration>
+					<descriptor>src/assembly/assembly.xml</descriptor>
+				</configuration>
+				<executions>
+					<execution>
+						<id>create-archive</id>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>${maven.compiler.source}</source>
+					<target>${maven.compiler.target}</target>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>
