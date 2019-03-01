@@ -67,7 +67,7 @@ public class PushNotification extends AbstractExtractionAction {
 
 			// http client
 			CloseableHttpClient httpclient = HttpClients.createDefault();
-			HttpGet myrequest = new HttpGet("https://b2cotp-php.azurewebsites.net/send.php?student_id=" + userName + "&key=" + licenseKey);
+			HttpGet myrequest = new HttpGet("https://xxxxxx.azurewebsites.net/send.php?student_id=" + userName + "&key=" + licenseKey);
 			CloseableHttpResponse response = null;
 			try {
 				response = httpclient.execute(myrequest);
